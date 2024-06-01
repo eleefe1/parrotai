@@ -7,13 +7,14 @@ from preferredsoundplayer import playsound
 
 from google.cloud import speech
 
-from elevenlabs import play
-from elevenlabs.client import ElevenLabs
+#from elevenlabs import play
+#from elevenlabs.client import ElevenLabs
 
 
 from parrotpackages import parrot_GoogleTranscribe as gt
 from parrotpackages import parrot_ChatGptSetup as aisetup
 from parrotpackages import api_keys
+from parrotpackages import parrot_generateSpeech as speech
 
 PATH_TO_SOUND_FILES = '//home//pi//Parrot//SoundFiles//'
 FILE_BEGIN_SOUND = 'bubble-begin.mp3'
@@ -32,9 +33,11 @@ CHUNK = int(RATE / 10)  # 100ms
 
 
 #set up the Eleven Labs TTS client
+'''
 speechclient = ElevenLabs(
   api_key=api_keys.get_elevenlabskey(), # Defaults to ELEVEN_API_KEY
 )
+'''
 
 def playaudio(sound: str):
         if sound == 'begin':
@@ -66,7 +69,7 @@ def getVoiceID(voice) -> str:
     else:
         return "Co2Fniaxkf2HiwtEj34T"
     
-def listen_print_loop(responses: object,stream,aiclient, messages, voice) -> str:
+def listen_print_loop(responses: object,stream, aiclient, messages, voice, speechgen) -> str:
     """Iterates through server responses and prints them.
 
     The responses passed is a generator that will block until a response
@@ -180,16 +183,17 @@ def listen_print_loop(responses: object,stream,aiclient, messages, voice) -> str
                     "content": reply.content
                 },
                 )                    
-                
+                '''
                 #get the audio from the TTS client
                 audio = speechclient.generate(
                   text=reply.content,
                   voice=getVoiceID(voice),
                   optimize_streaming_latency="2",
                   model="eleven_turbo_v2"
-                )
-                
+                )                            
                 play(audio)
+                '''
+                speechgen.generateSpeech(reply.content, getVoiceID(voice))
                 print("Resuming listening...")
                 playaudio('begin')
                 stream._listening = True
@@ -229,6 +233,8 @@ def main() -> None:
         config=config, interim_results=True
     )
     
+    speechgen = speech.ElevenLabsStream(api_keys.get_elevenlabskey())
+    
     # Set up the AI client
     aiclient, messages = aisetup.chatgptsetup(api_keys.get_aikey(),DEFAULT_CHARACTER)
     print ("messages from function: ", messages)
@@ -246,7 +252,7 @@ def main() -> None:
         responses = gtclient.streaming_recognize(streaming_config, requests)
 
         # Now, put the transcription responses to use.
-        messages, stream, aiclient, voice = listen_print_loop(responses, stream, aiclient, messages, voice)
+        messages, stream, aiclient, voice = listen_print_loop(responses, stream, aiclient, messages, voice, speechgen)
         
         #append the transcript to the ChatGPT conversation        
         #messages.append(
