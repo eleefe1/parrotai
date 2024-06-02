@@ -7,10 +7,6 @@ from preferredsoundplayer import playsound
 
 from google.cloud import speech
 
-#from elevenlabs import play
-#from elevenlabs.client import ElevenLabs
-
-
 from parrotpackages import parrot_GoogleTranscribe as gt
 from parrotpackages import parrot_ChatGptSetup as aisetup
 from parrotpackages import api_keys
@@ -183,16 +179,8 @@ def listen_print_loop(responses: object,stream, aiclient, messages, voice, speec
                     "content": reply.content
                 },
                 )                    
-                '''
-                #get the audio from the TTS client
-                audio = speechclient.generate(
-                  text=reply.content,
-                  voice=getVoiceID(voice),
-                  optimize_streaming_latency="2",
-                  model="eleven_turbo_v2"
-                )                            
-                play(audio)
-                '''
+                
+                
                 speechgen.generateSpeech(reply.content, getVoiceID(voice))
                 print("Resuming listening...")
                 playaudio('begin')
@@ -253,15 +241,6 @@ def main() -> None:
 
         # Now, put the transcription responses to use.
         messages, stream, aiclient, voice = listen_print_loop(responses, stream, aiclient, messages, voice, speechgen)
-        
-        #append the transcript to the ChatGPT conversation        
-        #messages.append(
-            #{
-              #  "role": "user",
-             #   "content": transcript
-            #},
-           # )        
-        
         
         
     print("script exiting")
