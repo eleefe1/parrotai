@@ -169,7 +169,7 @@ def listen_print_loop(responses: object,stream, aiclient, messages, voice, speec
                     model="gpt-3.5-turbo"
                     )
                 reply = chat.choices[0].message
-                print(reply)
+                #print(reply)    #uncomment this line to show the whole response
                 print("Assistant: ", reply.content)
                 print("*****")
 
