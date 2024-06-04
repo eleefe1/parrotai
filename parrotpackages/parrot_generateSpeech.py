@@ -43,3 +43,25 @@ class ElevenLabsStream:
         # close the ffplay process when finished
         ffplay_proc.stdin.close()
         ffplay_proc.wait()
+
+    def characterlimit():
+
+        # Define the URL for the user info endpoint
+        url = "https://api.elevenlabs.io/v1/user"
+        
+        #Make the GET request to the user info endpoint
+        response = requests.get(url, headers=self._headers)
+
+        # Parse the JSON response
+        data = response.json()
+        
+        # Print the character count and limit
+        print(f"Character Count: {data['subscription']['character_count']}")
+        print(f"Character Limit: {data['subscription']['character_limit']}")
+
+        remaining = data['subscription']['character_limit'] - data['subscription']['character_count'] 
+
+        print(f"Characters Remaining: {remaining}")
+        self.generateSpeech('Of your ' + str(data['subscription']['character_limit']) + 'limit, ' + str(remaining) + ' remain.', 'kARntxLbX0EUozjrxp0G')
+
+        return
