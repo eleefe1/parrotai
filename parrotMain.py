@@ -4,6 +4,7 @@ import sys
 import pyaudio
 import time
 from preferredsoundplayer import playsound
+import RPi.GPIO as GPIO
 
 from google.cloud import speech
 
@@ -26,6 +27,10 @@ DEFAULT_CHARACTER = 'pirate'
 # Audio recording parameters
 RATE = 16000
 CHUNK = int(RATE / 10)  # 100ms
+
+#set up the switch
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(17, GPIO.IN, GPIO.PUD_DOWN)
 
 
 #set up the Eleven Labs TTS client
@@ -108,6 +113,12 @@ def listen_print_loop(responses: object,stream, aiclient, messages, voice, speec
         # If the previous result was longer than this one, we need to print
         # some extra spaces to overwrite the previous result
         overwrite_chars = " " * (num_chars_printed - len(transcript))
+        
+        #this if breaks the loop if the switch is turned off
+        if not GPIO.input(17):
+            print ("Switch OFF - breaking the loop")
+            break
+        
 
         if not result.is_final:
             sys.stdout.write(transcript + overwrite_chars + "\r")
@@ -123,7 +134,8 @@ def listen_print_loop(responses: object,stream, aiclient, messages, voice, speec
             # one of our keywords.
             if re.search(r"\b(quit)\b", transcript, re.I):
                 print("Exiting..")
-                break
+                #break
+                sys.exit()
             elif re.search(r"\b(freeze all motor functions)\b", transcript, re.I):
                 
                 stream._listening = False
@@ -227,20 +239,26 @@ def main() -> None:
     aiclient, messages = aisetup.chatgptsetup(api_keys.get_aikey(),DEFAULT_CHARACTER)
     print ("messages from function: ", messages)
     voice = DEFAULT_CHARACTER
+    
+    while True:
+        if GPIO.input(17):
+            with gt.MicrophoneStream(RATE, CHUNK) as stream:
+                                
+                audio_generator = stream.generator()
+                #print('playing begin sound')
+                playaudio('begin')                                             
+            
+                requests = (
+                    gt.speech.StreamingRecognizeRequest(audio_content=content)
+                    for content in audio_generator
+                )
 
-    with gt.MicrophoneStream(RATE, CHUNK) as stream:
-        audio_generator = stream.generator()
-        #print('playing begin sound')
-        playaudio('begin')
-        requests = (
-            gt.speech.StreamingRecognizeRequest(audio_content=content)
-            for content in audio_generator
-        )
+                responses = gtclient.streaming_recognize(streaming_config, requests)
 
-        responses = gtclient.streaming_recognize(streaming_config, requests)
-
-        # Now, put the transcription responses to use.
-        messages, stream, aiclient, voice = listen_print_loop(responses, stream, aiclient, messages, voice, speechgen)
+                # Now, put the transcription responses to use.
+                messages, stream, aiclient, voice = listen_print_loop(responses, stream, aiclient, messages, voice, speechgen)
+        else:
+            print ("Switch OFF - not running parrot")   
         
         
     print("script exiting")
