@@ -16,8 +16,22 @@ class ElevenLabsStream:
             'Content-Type': 'application/json'
         }
     
-    def generateSpeech(self:object, text: str, voiceID: str) -> None:    
+    def getVoiceID(voice: str) -> str:
+    #method to return the voice ID requested by string
+        if voice == "pirate":
+            return "Co2Fniaxkf2HiwtEj34T"
+                
+        elif voice == "Barbara":
+            return "kARntxLbX0EUozjrxp0G"
         
+        elif voice == "sassy":
+            return "03vEurziQfq3V8WZhQvn"
+                
+        else:
+            return "Co2Fniaxkf2HiwtEj34T"
+            
+    def generateSpeech(self:object, text: str, voiceID: str) -> None:    
+    #method to generate and play the speech from text and voice
         data = {
             'text': text,
             'model_id': "eleven_turbo_v2",
