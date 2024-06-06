@@ -1,6 +1,7 @@
 import requests
 import subprocess
 
+DEFAULT_CHARACTER = 'pirate'
 
 class ElevenLabsStream:
     #creates a class for streaming and playing Eleven Labs speech using ffmpeg
@@ -15,23 +16,28 @@ class ElevenLabsStream:
             'xi-api-key': key,
             'Content-Type': 'application/json'
         }
+        
+        self.voice = DEFAULT_CHARACTER
     
-    def getVoiceID(voice: str) -> str:
-    #method to return the voice ID requested by string
+    def getVoiceID(self:object, voice: str) -> str:
+    #function to return the voice ID requested by string
         if voice == "pirate":
             return "Co2Fniaxkf2HiwtEj34T"
                 
         elif voice == "Barbara":
             return "kARntxLbX0EUozjrxp0G"
         
-        elif voice == "sassy":
+        elif voice == "sugar":
             return "03vEurziQfq3V8WZhQvn"
                 
         else:
             return "Co2Fniaxkf2HiwtEj34T"
             
-    def generateSpeech(self:object, text: str, voiceID: str) -> None:    
+    def generateSpeech(self:object, text: str, voice="") -> None:    
     #method to generate and play the speech from text and voice
+        if voice == "":
+            voice = self.voice
+        
         data = {
             'text': text,
             'model_id': "eleven_turbo_v2",
@@ -41,7 +47,7 @@ class ElevenLabsStream:
             }
         }
 
-        url = 'https://api.elevenlabs.io/v1/text-to-speech/' + voiceID
+        url = 'https://api.elevenlabs.io/v1/text-to-speech/' + self.getVoiceID(voice)
         
         response = requests.post(url, headers=self._headers, params=self._querystring, json=data, stream=True)
         #response.raise_for_status()
@@ -58,7 +64,7 @@ class ElevenLabsStream:
         ffplay_proc.stdin.close()
         ffplay_proc.wait()
 
-    def characterlimit():
+    def get_characterLimit(self:object):
 
         # Define the URL for the user info endpoint
         url = "https://api.elevenlabs.io/v1/user"
@@ -76,6 +82,6 @@ class ElevenLabsStream:
         remaining = data['subscription']['character_limit'] - data['subscription']['character_count'] 
 
         print(f"Characters Remaining: {remaining}")
-        self.generateSpeech('Of your ' + str(data['subscription']['character_limit']) + 'limit, ' + str(remaining) + ' remain.', 'kARntxLbX0EUozjrxp0G')
+        self.generateSpeech(text=data['first_name']+', of your ' + str(data['subscription']['character_limit']) + 'limit, ' + str(remaining) + ' remain.', voice='Barbara')
 
         return

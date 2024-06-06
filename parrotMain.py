@@ -18,7 +18,7 @@ FILE_BEGIN_SOUND = 'bubble-begin.mp3'
 FILE_END_SOUND = 'bloop-end.mp3'
 FILE_FREEZE = 'Barbara-FreezeMotorFunctions-Character.wav'
 FILE_LEAVING = 'Barbara-LeavingDiagnostics.wav'
-FILE_SASSY_ACK = 'Sassy-Ack.wav'
+FILE_SUGAR_ACK = 'Sugar-Ack.wav'
 FILE_PIRATE_ACK = 'Pirate-Ack.wav'
 
 DEFAULT_CHARACTER = 'pirate'
@@ -33,12 +33,6 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(17, GPIO.IN, GPIO.PUD_DOWN)
 
 
-#set up the Eleven Labs TTS client
-'''
-speechclient = ElevenLabs(
-  api_key=api_keys.get_elevenlabskey(), # Defaults to ELEVEN_API_KEY
-)
-'''
 
 def playaudio(sound: str):
         if sound == 'begin':
@@ -51,11 +45,11 @@ def playaudio(sound: str):
             playsound(PATH_TO_SOUND_FILES+FILE_LEAVING)
         elif sound == 'pirate ack':
             playsound(PATH_TO_SOUND_FILES+FILE_PIRATE_ACK)
-        elif sound == 'sassy ack':
-            playsound(PATH_TO_SOUND_FILES+FILE_SASSY_ACK)
+        elif sound == 'sugar ack':
+            playsound(PATH_TO_SOUND_FILES+FILE_SUGAR_ACK)
         else:
             print('No audio file found')        
-
+'''
 def getVoiceID(voice) -> str:
     
     if voice == "pirate":
@@ -69,8 +63,9 @@ def getVoiceID(voice) -> str:
             
     else:
         return "Co2Fniaxkf2HiwtEj34T"
-    
-def listen_print_loop(responses: object,stream, aiclient, messages, voice, speechgen) -> str:
+'''
+
+def listen_print_loop(responses: object,stream, aiclient, messages, speechgen) -> str:
     """Iterates through server responses and prints them.
 
     The responses passed is a generator that will block until a response
@@ -113,12 +108,12 @@ def listen_print_loop(responses: object,stream, aiclient, messages, voice, speec
         # If the previous result was longer than this one, we need to print
         # some extra spaces to overwrite the previous result
         overwrite_chars = " " * (num_chars_printed - len(transcript))
-        
+        '''
         #this if breaks the loop if the switch is turned off
         if not GPIO.input(17):
             print ("Switch OFF - breaking the loop")
             break
-        
+        '''
 
         if not result.is_final:
             sys.stdout.write(transcript + overwrite_chars + "\r")
@@ -193,7 +188,7 @@ def listen_print_loop(responses: object,stream, aiclient, messages, voice, speec
                 )                    
                 
                 
-                speechgen.generateSpeech(reply.content, getVoiceID(voice))
+                speechgen.generateSpeech(text=reply.content)
                 print("Resuming listening...")
                 playaudio('begin')
                 stream._listening = True
@@ -202,20 +197,21 @@ def listen_print_loop(responses: object,stream, aiclient, messages, voice, speec
                 print ("In diagnostics mode. Choose your character.")
                 
                 if re.search(r"\b(pirate)\b", transcript, re.I):
-                    voice = 'pirate'
-                    aiclient, messages = aisetup.chatgptsetup(api_keys.get_aikey(),"pirate")
+                    speechgen.voice = 'pirate'
+                    aiclient, messages = aisetup.chatgptsetup(api_keys.get_aikey(), speechgen.voice)
                     playaudio('pirate ack')
                     stream._diagnostics = False
                 elif re.search(r"\b(sugar)\b", transcript, re.I):
-                    voice = 'sassy'
-                    aiclient, messages = aisetup.chatgptsetup(api_keys.get_aikey(),"sassy")
-                    playaudio('sassy ack')
+                    speechgen.voice = 'sugar'
+                    aiclient, messages = aisetup.chatgptsetup(api_keys.get_aikey(),speechgen.voice)
+                    playaudio('sugar ack')
                     stream._diagnostics = False
-                else:
-                    voice = DEFAULT_CHARACTER
-                    aiclient, messages = aisetup.chatgptsetup(api_keys.get_aikey(),DEFAULT_CHARACTER)
+                elif re.search(r"\b(character limit)\b", transcript, re.I):
+                    speechgen.get_characterLimit()
+                    stream._diagnostics = False
+                
 
-    return messages, stream, aiclient, voice
+    return messages, stream, aiclient, speechgen
 
 def main() -> None:
     """Transcribe speech from audio file."""
@@ -236,29 +232,28 @@ def main() -> None:
     speechgen = speech.ElevenLabsStream(api_keys.get_elevenlabskey())
     
     # Set up the AI client
-    aiclient, messages = aisetup.chatgptsetup(api_keys.get_aikey(),DEFAULT_CHARACTER)
-    print ("messages from function: ", messages)
-    voice = DEFAULT_CHARACTER
+    aiclient, messages = aisetup.chatgptsetup(api_keys.get_aikey(), speechgen.voice)
+    #print ("messages from function: ", messages)
+    #voice = DEFAULT_CHARACTER
     
-    while True:
-        if GPIO.input(17):
-            with gt.MicrophoneStream(RATE, CHUNK) as stream:
+#    while True:
+#        if GPIO.input(17):
+    with gt.MicrophoneStream(RATE, CHUNK) as stream:
                                 
-                audio_generator = stream.generator()
-                #print('playing begin sound')
-                playaudio('begin')                                             
+        audio_generator = stream.generator()
+        playaudio('begin')                                             
             
-                requests = (
-                    gt.speech.StreamingRecognizeRequest(audio_content=content)
-                    for content in audio_generator
-                )
+        requests = (
+            gt.speech.StreamingRecognizeRequest(audio_content=content)
+            for content in audio_generator
+        )
 
-                responses = gtclient.streaming_recognize(streaming_config, requests)
+        responses = gtclient.streaming_recognize(streaming_config, requests)
 
                 # Now, put the transcription responses to use.
-                messages, stream, aiclient, voice = listen_print_loop(responses, stream, aiclient, messages, voice, speechgen)
-        else:
-            print ("Switch OFF - not running parrot")   
+        messages, stream, aiclient, speechgen = listen_print_loop(responses, stream, aiclient, messages, speechgen)
+ #       else:
+ #           print ("Switch OFF - not running parrot")   
         
         
     print("script exiting")
