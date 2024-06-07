@@ -1,5 +1,6 @@
 import requests
 import subprocess
+import inflect
 
 DEFAULT_CHARACTER = 'pirate'
 
@@ -82,6 +83,7 @@ class ElevenLabsStream:
         remaining = data['subscription']['character_limit'] - data['subscription']['character_count'] 
 
         print(f"Characters Remaining: {remaining}")
-        self.generateSpeech(text=data['first_name']+', of your ' + str(data['subscription']['character_limit']) + 'limit, ' + str(remaining) + ' remain.', voice='Barbara')
+        p = inflect.engine()
+        self.generateSpeech(text=data['first_name']+', of your ' + p.number_to_words(data['subscription']['character_limit']) + 'limit, ' + p.number_to_words(remaining) + ' remain.', voice='Barbara')
 
         return

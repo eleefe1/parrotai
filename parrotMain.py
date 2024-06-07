@@ -127,8 +127,9 @@ def listen_print_loop(responses: object,stream, aiclient, messages, speechgen) -
 
             # Exit recognition if any of the transcribed phrases could be
             # one of our keywords.
-            if re.search(r"\b(quit)\b", transcript, re.I):
+            if re.search(r"\b(good night parrot)\b", transcript, re.I):
                 print("Exiting..")
+                speechgen.generateSpeech(text='Aye. Fare thee well, landlubber.')
                 #break
                 sys.exit()
             elif re.search(r"\b(freeze all motor functions)\b", transcript, re.I):
