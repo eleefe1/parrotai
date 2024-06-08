@@ -49,21 +49,8 @@ def playaudio(sound: str):
             playsound(PATH_TO_SOUND_FILES+FILE_SUGAR_ACK)
         else:
             print('No audio file found')        
-'''
-def getVoiceID(voice) -> str:
-    
-    if voice == "pirate":
-        return "Co2Fniaxkf2HiwtEj34T"
-            
-    elif voice == "Barbara":
-        return "kARntxLbX0EUozjrxp0G"
-    
-    elif voice == "sassy":
-        return "03vEurziQfq3V8WZhQvn"
-            
-    else:
-        return "Co2Fniaxkf2HiwtEj34T"
-'''
+
+
 
 def listen_print_loop(responses: object,stream, aiclient, messages, speechgen) -> str:
     """Iterates through server responses and prints them.
@@ -127,7 +114,7 @@ def listen_print_loop(responses: object,stream, aiclient, messages, speechgen) -
 
             # Exit recognition if any of the transcribed phrases could be
             # one of our keywords.
-            if re.search(r"\b(good night parrot)\b", transcript, re.I):
+            if re.search(r"\b(good night parrot|good bye parrot|goodbye parrot)\b", transcript, re.I):
                 print("Exiting..")
                 speechgen.generateSpeech(text='Aye. Fare thee well, landlubber.')
                 #break
@@ -235,8 +222,7 @@ def main() -> None:
     # Set up the AI client
     aiclient, messages = aisetup.chatgptsetup(api_keys.get_aikey(), speechgen.voice)
     #print ("messages from function: ", messages)
-    #voice = DEFAULT_CHARACTER
-    
+        
 #    while True:
 #        if GPIO.input(17):
     with gt.MicrophoneStream(RATE, CHUNK) as stream:
