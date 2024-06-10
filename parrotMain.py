@@ -240,11 +240,15 @@ def main() -> None:
 
                 responses = gtclient.streaming_recognize(streaming_config, requests)
 
-                        # Now, put the transcription responses to use.
-                messages, stream, aiclient, speechgen = listen_print_loop(responses, stream, aiclient, messages, speechgen)
+                try:
+                    # Now, put the transcription responses to use.                
+                    messages, stream, aiclient, speechgen = listen_print_loop(responses, stream, aiclient, messages, speechgen)
+                except Exception as exception:
+                    print(exception)
+                    
         else:
             if not switchOff_ONS:
-                print ("Switch OFF - not running parrot")   
+                print ("Switch OFF - not running AI")   
                 switchOff_ONS = True
         
     print("script exiting")
