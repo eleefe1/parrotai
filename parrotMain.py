@@ -95,12 +95,12 @@ def listen_print_loop(responses: object,stream, aiclient, messages, speechgen) -
         # If the previous result was longer than this one, we need to print
         # some extra spaces to overwrite the previous result
         overwrite_chars = " " * (num_chars_printed - len(transcript))
-        '''
+        
         #this if breaks the loop if the switch is turned off
         if not GPIO.input(17):
             print ("Switch OFF - breaking the loop")
             break
-        '''
+        
 
         if not result.is_final:
             sys.stdout.write(transcript + overwrite_chars + "\r")
@@ -222,26 +222,30 @@ def main() -> None:
     # Set up the AI client
     aiclient, messages = aisetup.chatgptsetup(api_keys.get_aikey(), speechgen.voice)
     #print ("messages from function: ", messages)
+    
+    switchOff_ONS = False
         
-#    while True:
-#        if GPIO.input(17):
-    with gt.MicrophoneStream(RATE, CHUNK) as stream:
-                                
-        audio_generator = stream.generator()
-        playaudio('begin')                                             
-            
-        requests = (
-            gt.speech.StreamingRecognizeRequest(audio_content=content)
-            for content in audio_generator
-        )
+    while True:
+        if GPIO.input(17):
+            switchOff_ONS = False
+            with gt.MicrophoneStream(RATE, CHUNK) as stream:
+                                        
+                audio_generator = stream.generator()
+                playaudio('begin')                                             
+                    
+                requests = (
+                    gt.speech.StreamingRecognizeRequest(audio_content=content)
+                    for content in audio_generator
+                )
 
-        responses = gtclient.streaming_recognize(streaming_config, requests)
+                responses = gtclient.streaming_recognize(streaming_config, requests)
 
-                # Now, put the transcription responses to use.
-        messages, stream, aiclient, speechgen = listen_print_loop(responses, stream, aiclient, messages, speechgen)
- #       else:
- #           print ("Switch OFF - not running parrot")   
-        
+                        # Now, put the transcription responses to use.
+                messages, stream, aiclient, speechgen = listen_print_loop(responses, stream, aiclient, messages, speechgen)
+        else:
+            if not switchOff_ONS:
+                print ("Switch OFF - not running parrot")   
+                switchOff_ONS = True
         
     print("script exiting")
 

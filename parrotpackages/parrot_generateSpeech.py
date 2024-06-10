@@ -2,7 +2,7 @@ import requests
 import subprocess
 import inflect
 
-DEFAULT_CHARACTER = 'sugar'
+DEFAULT_CHARACTER = 'pirate'
 
 class ElevenLabsStream:
     #creates a class for streaming and playing Eleven Labs speech using ffmpeg
@@ -84,6 +84,6 @@ class ElevenLabsStream:
 
         print(f"Characters Remaining: {remaining}")
         p = inflect.engine()
-        self.generateSpeech(text=data['first_name']+', of your ' + p.number_to_words(data['subscription']['character_limit']) + 'limit, ' + p.number_to_words(remaining) + ' remain.', voice='Barbara')
+        self.generateSpeech(text=data['first_name']+', of your ' + p.number_to_words(data['subscription']['character_limit']) + 'limit,,, ' + p.number_to_words(remaining) + ' remain.', voice='Barbara')
 
         return
