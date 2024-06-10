@@ -40,7 +40,7 @@ class MicrophoneStream:
             stream_callback=self._fill_buffer,
         )
         #Listen to start
-        self._listening = True
+        self._listening = False
         self._diagnostics = False
         self.closed = False
 

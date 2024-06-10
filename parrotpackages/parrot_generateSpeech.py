@@ -30,6 +30,9 @@ class ElevenLabsStream:
         
         elif voice == "sugar":
             return "03vEurziQfq3V8WZhQvn"
+            
+        elif voice == "cowboy":
+            return "aOcS60CY8CoaVaZfqqb5"
                 
         else:
             return "Co2Fniaxkf2HiwtEj34T"

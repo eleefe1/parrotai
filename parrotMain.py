@@ -16,10 +16,12 @@ from parrotpackages import parrot_generateSpeech as speech
 PATH_TO_SOUND_FILES = '//home//pi//Parrot//SoundFiles//'
 FILE_BEGIN_SOUND = 'bubble-begin.mp3'
 FILE_END_SOUND = 'bloop-end.mp3'
-FILE_FREEZE = 'Barbara-FreezeMotorFunctions-Character.wav'
+FILE_FREEZE = 'Barbara-EnteringDiagnostics.wav'
 FILE_LEAVING = 'Barbara-LeavingDiagnostics.wav'
 FILE_SUGAR_ACK = 'Sugar-Ack.wav'
 FILE_PIRATE_ACK = 'Pirate-Ack.wav'
+FILE_COWBOY_ACK = 'Cowboy-Ack.wav'
+FILE_PIRATE_EXIT = 'Pirate-Exit.wav'
 
 DEFAULT_CHARACTER = 'pirate'
 
@@ -47,6 +49,10 @@ def playaudio(sound: str):
             playsound(PATH_TO_SOUND_FILES+FILE_PIRATE_ACK)
         elif sound == 'sugar ack':
             playsound(PATH_TO_SOUND_FILES+FILE_SUGAR_ACK)
+        elif sound == 'cowboy ack':
+            playsound(PATH_TO_SOUND_FILES+FILE_COWBOY_ACK)
+        elif sound == 'pirate exit':
+            playsound(PATH_TO_SOUND_FILES+FILE_PIRATE_EXIT)
         else:
             print('No audio file found')        
 
@@ -116,7 +122,7 @@ def listen_print_loop(responses: object,stream, aiclient, messages, speechgen) -
             # one of our keywords.
             if re.search(r"\b(good night parrot|good bye parrot|goodbye parrot)\b", transcript, re.I):
                 print("Exiting..")
-                speechgen.generateSpeech(text='Aye. Fare thee well, landlubber.')
+                playaudio('pirate exit')
                 #break
                 sys.exit()
             elif re.search(r"\b(freeze all motor functions)\b", transcript, re.I):
@@ -182,7 +188,7 @@ def listen_print_loop(responses: object,stream, aiclient, messages, speechgen) -
                 stream._listening = True
              
             if stream._diagnostics == True:
-                print ("In diagnostics mode. Choose your character.")
+                print ("In diagnostics mode. Say 'pirate' 'sugar' 'cowboy' 'character limit' 'leave diagnostics'.")
                 
                 if re.search(r"\b(pirate)\b", transcript, re.I):
                     speechgen.voice = 'pirate'
@@ -193,6 +199,11 @@ def listen_print_loop(responses: object,stream, aiclient, messages, speechgen) -
                     speechgen.voice = 'sugar'
                     aiclient, messages = aisetup.chatgptsetup(api_keys.get_aikey(),speechgen.voice)
                     playaudio('sugar ack')
+                    stream._diagnostics = False
+                elif re.search(r"\b(cowboy)\b", transcript, re.I):
+                    speechgen.voice = 'cowboy'
+                    aiclient, messages = aisetup.chatgptsetup(api_keys.get_aikey(),speechgen.voice)
+                    playaudio('cowboy ack')
                     stream._diagnostics = False
                 elif re.search(r"\b(character limit)\b", transcript, re.I):
                     speechgen.get_characterLimit()
@@ -231,7 +242,10 @@ def main() -> None:
             with gt.MicrophoneStream(RATE, CHUNK) as stream:
                                         
                 audio_generator = stream.generator()
+                
                 playaudio('begin')                                             
+                stream._listening = True
+                print("Listening...")
                     
                 requests = (
                     gt.speech.StreamingRecognizeRequest(audio_content=content)

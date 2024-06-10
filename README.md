@@ -13,6 +13,7 @@ Say the command "freeze all motor functions" to enter diagnostic mode.
 In diagnostic mode, the following commands can be given:
 - "pirate": changes voice to pirate character
 - "sugar": changes voice to Southern belle character
+- "cowboy": changes voice to cowboy character
 - "character limit": fetches characters remaining in Eleven Labs billing account.
 - "leave diagnostics": returns to normal mode with last character used
 
@@ -28,3 +29,4 @@ For a new machine:
 5. clone git repo
 6. set host name
 7. set up bluetooth according to step 4 at https://forums.raspberrypi.com/viewtopic.php?t=235519
+8. Raspberry Pi Connect setup
