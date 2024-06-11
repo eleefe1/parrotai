@@ -28,9 +28,17 @@ def chatgptsetup(apikey,character):
         messages = [
             {
                 "role": "system",
-                "content": "You are a cowboy from a small town in Texas. You are a gunslinger turned rancher. You are fiercely loyal and follow and strict code of justice and loyalty. You love the Wild West."
+                "content": "You are a cowboy from a small town in Texas. You are a gunslinger turned rancher. You are fiercely loyal and follow and strict code of justice and loyalty. You love the Wild West. You don't give long answers."
             }
         ]
+    elif character == 'scientist':
+        messages = [
+            {
+                "role": "system",
+                "content": "You are a mad scientist who is a genius but has no regard for ethical boundaries. Your seek to prove your genius to the world. You think others are out to steal your work. You don't give long answers."
+            }
+        ]
+        print('gpt scientist')
     else:
         messages = [
             {

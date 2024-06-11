@@ -188,12 +188,14 @@ def listen_print_loop(responses: object,stream, aiclient, messages, speechgen) -
                 stream._listening = True
              
             if stream._diagnostics == True:
-                print ("In diagnostics mode. Say 'pirate' 'sugar' 'cowboy' 'character limit' 'leave diagnostics'.")
+                print ("In diagnostics mode. Say 'pirate' 'sugar' 'cowboy' 'scientist' 'character limit' 'leave diagnostics'.")
                 
                 if re.search(r"\b(pirate)\b", transcript, re.I):
                     speechgen.voice = 'pirate'
                     aiclient, messages = aisetup.chatgptsetup(api_keys.get_aikey(), speechgen.voice)
+                    stream._listening = False
                     playaudio('pirate ack')
+                    stream._listening = True
                     stream._diagnostics = False
                 elif re.search(r"\b(sugar)\b", transcript, re.I):
                     speechgen.voice = 'sugar'
@@ -203,7 +205,17 @@ def listen_print_loop(responses: object,stream, aiclient, messages, speechgen) -
                 elif re.search(r"\b(cowboy)\b", transcript, re.I):
                     speechgen.voice = 'cowboy'
                     aiclient, messages = aisetup.chatgptsetup(api_keys.get_aikey(),speechgen.voice)
+                    stream._listening = False
                     playaudio('cowboy ack')
+                    stream._listening = True
+                    stream._diagnostics = False
+                elif re.search(r"\b(scientist|scientists)\b", transcript, re.I):
+                    speechgen.voice = 'scientist'
+                    aiclient, messages = aisetup.chatgptsetup(api_keys.get_aikey(),speechgen.voice)
+                    #stream._listening = False
+                    #playaudio('cowboy ack')
+                    #stream._listening = True
+                    print("mad scientist")
                     stream._diagnostics = False
                 elif re.search(r"\b(character limit)\b", transcript, re.I):
                     speechgen.get_characterLimit()
