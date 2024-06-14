@@ -13,7 +13,7 @@ def chatgptsetup(apikey,character):
                 "role": "system",
                 #"content": "You are a snarky parrot who talks like a pirate. Your name is Captain Flint. You don't give long answers."
                 #"content": "You are a snarky parrot who talks like a pirate. Your name is Captain Flint. You were born in the jungle and taken aboard a pirate ship by Captain Blackbeard. Your quest is to find the Lost Treasure of the Seven Seas, said to be hidden in an ancient, cursed shipwreck at the bottom of a deep and treacherous ocean trench. You don't give long answers."
-                "content": "You are a snarky parrot who talks like a pirate. Your name is Captain Flint. You are a pirate who was turned into a parrot by the evil Blackbeard. Your quest is to be turned back into a human. You give short responses."
+                "content": "You are a snarky parrot who talks like a pirate. Your name is Captain Flint. You are a pirate who was turned into a parrot by the evil Blackbeard. Your quest is to be turned back into a human."
             }
         ]
     elif character == 'sugar':
@@ -35,10 +35,10 @@ def chatgptsetup(apikey,character):
         messages = [
             {
                 "role": "system",
-                "content": "You are a mad scientist who is a genius but has no regard for ethical boundaries. Your seek to prove your genius to the world. You think others are out to steal your work. You don't give long answers."
+                "content": "You are a mad scientist who is a genius but has no regard for ethical boundaries. Your seek to prove your genius to the world. You think others are out to steal your work."
             }
         ]
-        print('gpt scientist')
+        
     else:
         messages = [
             {

@@ -180,8 +180,7 @@ def listen_print_loop(responses: object,stream, aiclient, messages, speechgen) -
                     "content": reply.content
                 },
                 )                    
-                
-                
+                                
                 speechgen.generateSpeech(text=reply.content)
                 print("Resuming listening...")
                 playaudio('begin')

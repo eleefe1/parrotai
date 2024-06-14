@@ -2,7 +2,7 @@ import requests
 import subprocess
 import inflect
 
-DEFAULT_CHARACTER = 'scientist'
+DEFAULT_CHARACTER = 'pirate'
 
 class ElevenLabsStream:
     #creates a class for streaming and playing Eleven Labs speech using ffmpeg
