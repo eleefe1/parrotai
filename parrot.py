@@ -35,4 +35,15 @@ class Parrot:
 		# Set up the AI client
 		self.aiclient, self.messages = aisetup.chatgptsetup(api_keys.get_aikey(), self.charmgr.currentCharacter['desc'])
 		
+	def updateCharacter(self: object, newCharacter) -> None:
+				
+		self.charmgr.currentCharacter = newCharacter
+		self.speechgen.voiceID = newCharacter['voiceID']
+		self.aiclient, self.messages = aisetup.chatgptsetup(api_keys.get_aikey(), newCharacter['desc'])
+		
+		
+		
+			
+			
+		
 			

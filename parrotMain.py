@@ -147,16 +147,7 @@ def listen_print_loop(responses: object,stream, parrot) -> str:
                 
                 stream._listening = True
                 
-            elif re.search(r"\b(leave diagnostics)\b", transcript, re.I):
-                
-                stream._listening = False                                
-                print("Stopping listening...")
-                playaudio('end') 
-                playaudio('leaving diagnostics')
-                stream._diagnostics = False 
-                print("Resuming listening...")
-                playaudio('begin')
-                stream._listening = True 
+            
                 
             elif not stream._diagnostics:
                 stream._listening = False
@@ -196,7 +187,7 @@ def listen_print_loop(responses: object,stream, parrot) -> str:
                 print ("In diagnostics mode. Say 'pirate' 'sugar' 'cowboy' 'scientist' 'character limit' 'leave diagnostics'.")
                 
                 #if 
-                
+                '''
                 if re.search(r"\b(pirate)\b", transcript, re.I):
                     speechgen.voice = 'pirate'
                     aiclient, messages = aisetup.chatgptsetup(api_keys.get_aikey(), speechgen.voice)
@@ -227,9 +218,39 @@ def listen_print_loop(responses: object,stream, parrot) -> str:
                 elif re.search(r"\b(character limit)\b", transcript, re.I):
                     speechgen.get_characterLimit()
                     stream._diagnostics = False
+                '''
+                if re.search(r"\b(character limit)\b", transcript, re.I):
+                    stream._listening = False
+                    parrot.speechgen.get_characterLimit()
+                    stream._diagnostics = False
+                    stream._listening = True
                 
+                elif re.search(r"\b(leave diagnostics)\b", transcript, re.I):                
+                    stream._listening = False                                
+                    print("Stopping listening...")
+                    playaudio('end') 
+                    playaudio('leaving diagnostics')
+                    stream._diagnostics = False 
+                    print("Resuming listening...")
+                    playaudio('begin')
+                    stream._listening = True 
+                    
+                else:
+                    tempCharacter = parrot.charmgr.getCharacterFromText(transcript)
+                    if tempCharacter != None:
+                        parrot.updateCharacter(tempCharacter)
+                        
+                        print("New Character: " + parrot.charmgr.currentCharacter['name'])
+                        
+                        stream._listening = False
+                        playaudio(parrot.charmgr.currentCharacter['name'] + ' ack')
+                        stream._diagnostics = False
+                        print("Resuming listening...")
+                        playaudio('begin')
+                        stream._listening = True
+                    
 
-    return messages, stream, aiclient, speechgen
+    return stream, parrot
 
 def main() -> None:
     """Transcribe speech from audio file."""
@@ -288,7 +309,7 @@ def main() -> None:
                 try:
                     # Now, put the transcription responses to use.                
                     #messages, stream, aiclient, speechgen = listen_print_loop(responses, stream, aiclient, messages, speechgen)
-                    parrot = listen_print_loop(responses, stream, parrot)
+                    stream, parrot = listen_print_loop(responses, stream, parrot)
                 except Exception as exception:
                     print(exception)
                     

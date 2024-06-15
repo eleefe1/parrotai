@@ -47,7 +47,9 @@ class ElevenLabsStream:
     #method to generate and play the speech from text and voice
         if voiceID == "":
             voice = self.voiceID
-        
+        else:
+            voice = voiceID
+        print(voice)
         data = {
             'text': text,
             'model_id': "eleven_turbo_v2",
@@ -56,7 +58,7 @@ class ElevenLabsStream:
                 'similarity_boost': 0.30
             }
         }
-
+        
         url = 'https://api.elevenlabs.io/v1/text-to-speech/' + voice
         
         response = requests.post(url, headers=self._headers, params=self._querystring, json=data, stream=True)
@@ -93,6 +95,6 @@ class ElevenLabsStream:
 
         print(f"Characters Remaining: {remaining}")
         p = inflect.engine()
-        self.generateSpeech(text=data['first_name']+', of your ' + p.number_to_words(data['subscription']['character_limit']) + 'limit,,, ' + p.number_to_words(remaining) + ' remain.', voice='Barbara')
+        self.generateSpeech(text=data['first_name']+', of your ' + p.number_to_words(data['subscription']['character_limit']) + 'limit, -- ' + p.number_to_words(remaining) + ' remain.', voiceID='kARntxLbX0EUozjrxp0G')
 
         return
