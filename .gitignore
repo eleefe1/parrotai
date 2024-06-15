@@ -1,6 +1,9 @@
 #ignore the api keys files
 api_keys*
 
+#ignore the pycache directory
+__pycache__/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
