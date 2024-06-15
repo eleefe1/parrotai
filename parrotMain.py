@@ -6,7 +6,7 @@ import time
 from preferredsoundplayer import playsound
 import RPi.GPIO as GPIO
 
-
+#from google.cloud import speech
 '''
 from parrotpackages import api_keys
 from parrotpackages import parrot_GoogleTranscribe as gt
@@ -172,7 +172,7 @@ def listen_print_loop(responses: object,stream, parrot) -> str:
                 )
 
                 chat = parrot.aiclient.chat.completions.create(
-                    messages=messages,
+                    messages=parrot.messages,
                     model="gpt-3.5-turbo"
                     )
                 reply = chat.choices[0].message
@@ -279,7 +279,7 @@ def main() -> None:
                 stream._listening = True
                     
                 requests = (
-                    parrot.stt.speech.StreamingRecognizeRequest(audio_content=content)
+                    parrotpkg.stt.speech.StreamingRecognizeRequest(audio_content=content)
                     for content in audio_generator
                 )
 
