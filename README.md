@@ -14,6 +14,7 @@ In diagnostic mode, the following commands can be given:
 - "pirate": changes voice to pirate character
 - "sugar": changes voice to Southern belle character
 - "cowboy": changes voice to cowboy character
+- "scientist": changes voice to mad scientist character
 - "character limit": fetches characters remaining in Eleven Labs billing account.
 - "leave diagnostics": returns to normal mode with last character used
 
@@ -25,8 +26,8 @@ For a new machine:
 1. create parrotenv virtual environment
 2. set up Google, ChatGPT, and Eleven Labs accounts
 3. authenticate Google Speech per Google instructions
-4. install packages per requirements.txt
+4. install packages per requirements.txt - use "sudo apt-get install portaudio19-dev" prior to requirements.txt
 5. clone git repo
 6. set host name
-7. set up bluetooth according to step 4 at https://forums.raspberrypi.com/viewtopic.php?t=235519
+7. set up bluetooth according to step 4 at https://forums.raspberrypi.com/viewtopic.php?t=235519 and https://medium.com/cemac/keep-bluetooth-discoverable-rpi-unix-bbe1c9ecbdb6
 8. Raspberry Pi Connect setup
