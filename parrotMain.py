@@ -18,7 +18,7 @@ from parrotpackages import characterManager as charman
 #from parrot import Parrot
 import parrot as parrotpkg
 
-PATH_TO_SOUND_FILES = '//home//pi//Parrot//SoundFiles//'
+PATH_TO_SOUND_FILES = '//home//pi//parrotai//SoundFiles//'
 FILE_BEGIN_SOUND = 'bubble-begin.mp3'
 FILE_END_SOUND = 'bloop-end.mp3'
 FILE_FREEZE = 'Barbara-EnteringDiagnostics.wav'
