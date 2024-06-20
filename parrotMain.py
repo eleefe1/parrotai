@@ -17,12 +17,11 @@ from parrotpackages import parrot_generateSpeech as speech
 from parrotpackages import characterManager as charman
 '''
 
-<<<<<<< HEAD
-=======
+
 #from parrot import Parrot
 import parrot as parrotpkg
 
->>>>>>> characterlist
+
 PATH_TO_SOUND_FILES = '//home//pi//parrotai//SoundFiles//'
 FILE_BEGIN_SOUND = 'bubble-begin.mp3'
 FILE_END_SOUND = 'bloop-end.mp3'
