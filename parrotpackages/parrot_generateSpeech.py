@@ -2,12 +2,12 @@ import requests
 import subprocess
 import inflect
 
-DEFAULT_CHARACTER = 'pirate'
+DEFAULT_CHARACTER = 'scientist'
 
 class ElevenLabsStream:
     #creates a class for streaming and playing Eleven Labs speech using ffmpeg
     
-    def __init__(self: object, key: str) -> None:       
+    def __init__(self: object, key: str, voiceID="") -> None:       
         
 
         self._querystring = {"optimize_streaming_latency":"3","output_format":"mp3_22050_32"}
@@ -18,7 +18,10 @@ class ElevenLabsStream:
             'Content-Type': 'application/json'
         }
         
-        self.voice = DEFAULT_CHARACTER
+        if voiceID == "":
+            self.voiceID = DEFAULT_CHARACTER
+        else:
+            self.voiceID = voiceID
     
     def getVoiceID(self:object, voice: str) -> str:
     #function to return the voice ID requested by string
@@ -40,11 +43,13 @@ class ElevenLabsStream:
         else:
             return "Co2Fniaxkf2HiwtEj34T"
             
-    def generateSpeech(self:object, text: str, voice="") -> None:    
+    def generateSpeech(self:object, text: str, voiceID="") -> None:    
     #method to generate and play the speech from text and voice
-        if voice == "":
-            voice = self.voice
-        
+        if voiceID == "":
+            voice = self.voiceID
+        else:
+            voice = voiceID
+        print(voice)
         data = {
             'text': text,
             'model_id': "eleven_turbo_v2",
@@ -53,8 +58,8 @@ class ElevenLabsStream:
                 'similarity_boost': 0.30
             }
         }
-
-        url = 'https://api.elevenlabs.io/v1/text-to-speech/' + self.getVoiceID(voice)
+        
+        url = 'https://api.elevenlabs.io/v1/text-to-speech/' + voice
         
         response = requests.post(url, headers=self._headers, params=self._querystring, json=data, stream=True)
         #response.raise_for_status()
@@ -90,6 +95,6 @@ class ElevenLabsStream:
 
         print(f"Characters Remaining: {remaining}")
         p = inflect.engine()
-        self.generateSpeech(text=data['first_name']+', of your ' + p.number_to_words(data['subscription']['character_limit']) + 'limit,,, ' + p.number_to_words(remaining) + ' remain.', voice='Barbara')
+        self.generateSpeech(text=data['first_name']+', of your ' + p.number_to_words(data['subscription']['character_limit']) + 'limit, -- ' + p.number_to_words(remaining) + ' remain.', voiceID='kARntxLbX0EUozjrxp0G')
 
         return

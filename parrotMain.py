@@ -1,3 +1,5 @@
+#!/home/pi/parrotenv/bin/python
+
 import queue
 import re
 import sys
@@ -6,13 +8,21 @@ import time
 from preferredsoundplayer import playsound
 import RPi.GPIO as GPIO
 
-from google.cloud import speech
-
+#from google.cloud import speech
+'''
+from parrotpackages import api_keys
 from parrotpackages import parrot_GoogleTranscribe as gt
 from parrotpackages import parrot_ChatGptSetup as aisetup
-from parrotpackages import api_keys
 from parrotpackages import parrot_generateSpeech as speech
+from parrotpackages import characterManager as charman
+'''
 
+<<<<<<< HEAD
+=======
+#from parrot import Parrot
+import parrot as parrotpkg
+
+>>>>>>> characterlist
 PATH_TO_SOUND_FILES = '//home//pi//parrotai//SoundFiles//'
 FILE_BEGIN_SOUND = 'bubble-begin.mp3'
 FILE_END_SOUND = 'bloop-end.mp3'
@@ -23,7 +33,7 @@ FILE_PIRATE_ACK = 'Pirate-Ack.wav'
 FILE_COWBOY_ACK = 'Cowboy-Ack.wav'
 FILE_PIRATE_EXIT = 'Pirate-Exit.wav'
 
-DEFAULT_CHARACTER = 'pirate'
+#DEFAULT_CHARACTER = 'pirate'
 
 
 # Audio recording parameters
@@ -58,7 +68,8 @@ def playaudio(sound: str):
 
 
 
-def listen_print_loop(responses: object,stream, aiclient, messages, speechgen) -> str:
+#def listen_print_loop(responses: object,stream, aiclient, messages, speechgen) -> str:#
+def listen_print_loop(responses: object,stream, parrot) -> str:
     """Iterates through server responses and prints them.
 
     The responses passed is a generator that will block until a response
@@ -141,16 +152,7 @@ def listen_print_loop(responses: object,stream, aiclient, messages, speechgen) -
                 
                 stream._listening = True
                 
-            elif re.search(r"\b(leave diagnostics)\b", transcript, re.I):
-                
-                stream._listening = False                                
-                print("Stopping listening...")
-                playaudio('end') 
-                playaudio('leaving diagnostics')
-                stream._diagnostics = False 
-                print("Resuming listening...")
-                playaudio('begin')
-                stream._listening = True 
+            
                 
             elif not stream._diagnostics:
                 stream._listening = False
@@ -158,15 +160,15 @@ def listen_print_loop(responses: object,stream, aiclient, messages, speechgen) -
                 playaudio('end')
                 
                 num_chars_printed = 0
-                messages.append(
+                parrot.messages.append(
                    {
                        "role": "user",
                        "content": transcript
                     },
                 )
 
-                chat = aiclient.chat.completions.create(
-                    messages=messages,
+                chat = parrot.aiclient.chat.completions.create(
+                    messages=parrot.messages,
                     model="gpt-3.5-turbo"
                     )
                 reply = chat.choices[0].message
@@ -174,14 +176,14 @@ def listen_print_loop(responses: object,stream, aiclient, messages, speechgen) -
                 print("Assistant: ", reply.content)
                 print("*****")
 
-                messages.append(
+                parrot.messages.append(
                 {
                     "role": "assistant",
                     "content": reply.content
                 },
                 )                    
                                 
-                speechgen.generateSpeech(text=reply.content)
+                parrot.speechgen.generateSpeech(text=reply.content)
                 print("Resuming listening...")
                 playaudio('begin')
                 stream._listening = True
@@ -189,6 +191,8 @@ def listen_print_loop(responses: object,stream, aiclient, messages, speechgen) -
             if stream._diagnostics == True:
                 print ("In diagnostics mode. Say 'pirate' 'sugar' 'cowboy' 'scientist' 'character limit' 'leave diagnostics'.")
                 
+                #if 
+                '''
                 if re.search(r"\b(pirate)\b", transcript, re.I):
                     speechgen.voice = 'pirate'
                     aiclient, messages = aisetup.chatgptsetup(api_keys.get_aikey(), speechgen.voice)
@@ -219,55 +223,98 @@ def listen_print_loop(responses: object,stream, aiclient, messages, speechgen) -
                 elif re.search(r"\b(character limit)\b", transcript, re.I):
                     speechgen.get_characterLimit()
                     stream._diagnostics = False
+                '''
+                if re.search(r"\b(character limit)\b", transcript, re.I):
+                    stream._listening = False
+                    parrot.speechgen.get_characterLimit()
+                    stream._diagnostics = False
+                    stream._listening = True
                 
+                elif re.search(r"\b(leave diagnostics)\b", transcript, re.I):                
+                    stream._listening = False                                
+                    print("Stopping listening...")
+                    playaudio('end') 
+                    playaudio('leaving diagnostics')
+                    stream._diagnostics = False 
+                    print("Resuming listening...")
+                    playaudio('begin')
+                    stream._listening = True 
+                    
+                else:
+                    tempCharacter = parrot.charmgr.getCharacterFromText(transcript)
+                    if tempCharacter != None:
+                        parrot.updateCharacter(tempCharacter)
+                        
+                        print("New Character: " + parrot.charmgr.currentCharacter['name'])
+                        
+                        stream._listening = False
+                        playaudio(parrot.charmgr.currentCharacter['name'] + ' ack')
+                        stream._diagnostics = False
+                        print("Resuming listening...")
+                        playaudio('begin')
+                        stream._listening = True
+                    
 
-    return messages, stream, aiclient, speechgen
+    return stream, parrot
 
 def main() -> None:
     """Transcribe speech from audio file."""
-    # Set up the Goolge Speech client    
-    language_code = "en-US"  # a BCP-47 language tag
     
+    '''
+    # Set up the Goolge Speech client    
     gtclient = gt.speech.SpeechClient()
     config = gt.speech.RecognitionConfig(
         encoding=gt.speech.RecognitionConfig.AudioEncoding.LINEAR16,
         sample_rate_hertz=RATE,
-        language_code=language_code,
+        language_code="en-US",
     )
 
     streaming_config = gt.speech.StreamingRecognitionConfig(
         config=config, interim_results=True
     )
     
+    #create the character manager
+    charmgr = charman.CharacterManager()
+    
+    #Set up the Eleven Labs client
     speechgen = speech.ElevenLabsStream(api_keys.get_elevenlabskey())
     
     # Set up the AI client
     aiclient, messages = aisetup.chatgptsetup(api_keys.get_aikey(), speechgen.voice)
     #print ("messages from function: ", messages)
+    '''
+    parrot = parrotpkg.Parrot()
     
     switchOff_ONS = False
         
     while True:
         if GPIO.input(17):
             switchOff_ONS = False
-            with gt.MicrophoneStream(RATE, CHUNK) as stream:
+            
+            
+            #update the character list when the switch turns on
+            parrot.charmgr.characterList = parrot.charmgr.readCharacterList()
+            
+            with parrotpkg.stt.MicrophoneStream(RATE, CHUNK) as stream:
                                         
                 audio_generator = stream.generator()
                 
                 playaudio('begin')                                             
-                stream._listening = True
+                #stream._listening = True
                 print("Listening...")
+                stream._listening = True
                     
                 requests = (
-                    gt.speech.StreamingRecognizeRequest(audio_content=content)
+                    parrotpkg.stt.speech.StreamingRecognizeRequest(audio_content=content)
                     for content in audio_generator
                 )
 
-                responses = gtclient.streaming_recognize(streaming_config, requests)
+                responses = parrot.sttclient.streaming_recognize(parrot.streaming_config, requests)
 
                 try:
                     # Now, put the transcription responses to use.                
-                    messages, stream, aiclient, speechgen = listen_print_loop(responses, stream, aiclient, messages, speechgen)
+                    #messages, stream, aiclient, speechgen = listen_print_loop(responses, stream, aiclient, messages, speechgen)
+                    stream, parrot = listen_print_loop(responses, stream, parrot)
                 except Exception as exception:
                     print(exception)
                     

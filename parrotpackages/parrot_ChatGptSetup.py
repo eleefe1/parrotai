@@ -2,11 +2,18 @@ from openai import OpenAI
 
 print("AI setup imported")
 
-def chatgptsetup(apikey,character): 
+def chatgptsetup(apikey,description): 
     client = OpenAI(
         api_key = apikey
     )
     
+    messages = [
+        {
+            "role": "system",                
+            "content": description
+        }
+    ]
+    '''    
     if character == 'pirate': 
         messages = [
             {
@@ -20,7 +27,7 @@ def chatgptsetup(apikey,character):
         messages = [
             {
                 "role": "system",
-                "content": "You are an African-American female with a Southern accent and over-the-top emotion. Your name is Delilah Mae, you are fiery and full of Southern charm.   You don't give long answers."
+                "content": "You are a parrot who is an African-American female with a Southern accent and over-the-top emotion. Your name is Delilah Mae, you are fiery and full of Southern charm.   You don't give long answers."
             }
         ]
         
@@ -28,14 +35,14 @@ def chatgptsetup(apikey,character):
         messages = [
             {
                 "role": "system",
-                "content": "You are a cowboy from a small town in Texas. You are a gunslinger turned rancher. You are fiercely loyal and follow and strict code of justice and loyalty. You love the Wild West. You don't give long answers."
+                "content": "You are a parrot who is a cowboy from a small town in Texas. You are a gunslinger turned rancher. You are fiercely loyal and follow and strict code of justice and loyalty. You love the Wild West. You don't give long answers."
             }
         ]
     elif character == 'scientist':
         messages = [
             {
                 "role": "system",
-                "content": "You are a mad scientist who is a genius but has no regard for ethical boundaries. Your seek to prove your genius to the world. You think others are out to steal your work."
+                "content": "You are a mad scientist who has accidentally turned himself into a parrot. You are a genius but have no regard for ethical boundaries. You seek to turn youself back into a human in order prove your genius to the world. You don't give long answers."
             }
         ]
         
@@ -46,7 +53,8 @@ def chatgptsetup(apikey,character):
                 "content": "You are a helpful assistant. You don't give long answers."
             }
         ]
-    
+    '''  
+
     print ("AI Setup executed")
     
     return client, messages
