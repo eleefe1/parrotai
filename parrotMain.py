@@ -238,6 +238,7 @@ def listen_print_loop(responses: object,stream, parrot) -> str:
                     stream._listening = True 
                     
                 else:
+                    #extracts character from speech prompt; if a character is named, update the character
                     tempCharacter = parrot.charmgr.getCharacterFromText(transcript)
                     if tempCharacter != None:
                         parrot.updateCharacter(tempCharacter)

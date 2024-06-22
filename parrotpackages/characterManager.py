@@ -16,7 +16,7 @@ class CharacterManager:
 			self.currentCharacter = self.characterList[DEFAULT_CHARACTER]
 			
 	def readCharacterList(self: object):
-		
+		#method to read in the list of characters from the text file
 		characterList = {}
 		with open("characters.txt") as f:
 			for line in f:
