@@ -49,7 +49,7 @@ class ElevenLabsStream:
             voice = self.voiceID
         else:
             voice = voiceID
-        print(voice)
+        #print(voice)
         data = {
             'text': text,
             'model_id': "eleven_turbo_v2",
