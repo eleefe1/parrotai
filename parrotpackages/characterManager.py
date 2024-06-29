@@ -2,12 +2,15 @@ import re
 
 DEFAULT_CHARACTER = None
 
+print("Importing Character Manager...")
+
 class CharacterManager:
 	
 	def __init__(self: object) -> None:
 		
+		print("    Reading character list...")
 		self.characterList = self.readCharacterList()
-		
+		print("    Done....")
 		#If default character is not set above, 
 		#set first character in the list as default
 		if not DEFAULT_CHARACTER:
@@ -18,7 +21,7 @@ class CharacterManager:
 	def readCharacterList(self: object):
 		#method to read in the list of characters from the text file
 		characterList = {}
-		with open("characters.txt") as f:
+		with open("/home/pi/parrotai/characters.txt") as f:
 			for line in f:
 			   (name, voiceID, desc) = line.split("	")
 			   characterList[name] = {'name': name, 'voiceID': voiceID, 'desc':desc}
@@ -44,3 +47,5 @@ class CharacterManager:
 	def getCharacterByName(self: object, name:str):
 		
 		return self.characterList[name]
+
+print("Done...")

@@ -1,5 +1,7 @@
 #!/home/pi/parrotenv/bin/python
 
+
+
 import queue
 import re
 import sys
@@ -31,9 +33,14 @@ FILE_SUGAR_ACK = 'Sugar-Ack.wav'
 FILE_PIRATE_ACK = 'Pirate-Ack.wav'
 FILE_COWBOY_ACK = 'Cowboy-Ack.wav'
 FILE_PIRATE_EXIT = 'Pirate-Exit.wav'
+FILE_READY = 'ready.mp3'
+FILE_STARTUP = 'startup.wav'
 
 #DEFAULT_CHARACTER = 'pirate'
 
+playsound(PATH_TO_SOUND_FILES+FILE_STARTUP)
+#from parrot import Parrot
+import parrot as parrotpkg
 
 # Audio recording parameters
 RATE = 16000
@@ -62,6 +69,8 @@ def playaudio(sound: str):
             playsound(PATH_TO_SOUND_FILES+FILE_COWBOY_ACK)
         elif sound == 'pirate exit':
             playsound(PATH_TO_SOUND_FILES+FILE_PIRATE_EXIT)
+        elif sound == 'ready':
+            playsound(PATH_TO_SOUND_FILES+FILE_READY)
         else:
             print('No audio file found')        
 
@@ -283,9 +292,13 @@ def main() -> None:
     aiclient, messages = aisetup.chatgptsetup(api_keys.get_aikey(), speechgen.voice)
     #print ("messages from function: ", messages)
     '''
+    
+    
     parrot = parrotpkg.Parrot()
     
     switchOff_ONS = False
+    
+    playaudio('ready')
         
     while True:
         if GPIO.input(17):

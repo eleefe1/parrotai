@@ -1,6 +1,6 @@
 from openai import OpenAI
 
-print("AI setup imported")
+print("Importing AI setup....")
 
 def chatgptsetup(apikey,description): 
     client = OpenAI(
@@ -58,3 +58,5 @@ def chatgptsetup(apikey,description):
     print ("AI Setup executed")
     
     return client, messages
+
+print("Done...")

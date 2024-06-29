@@ -7,9 +7,10 @@ from google.cloud import speech
 import pyaudio
 
 # Audio recording parameters
-RATE = 16000
+#RATE = 16000
+RATE = 44100
 CHUNK = int(RATE / 10)  # 100ms
-print('Transcription importing')
+print('Importing Google Transcription...')
 
 
 class MicrophoneStream:
@@ -26,6 +27,9 @@ class MicrophoneStream:
 
     def __enter__(self: object) -> object:
         self._audio_interface = pyaudio.PyAudio()
+        print("index: ", end=" ")
+        #print(self._audio_interface.get_device_info_by_index(3))
+        print(self._audio_interface.get_default_input_device_info()['index'])
         self._audio_stream = self._audio_interface.open(
             format=pyaudio.paInt16,
             # The API currently only supports 1-channel (mono) audio
@@ -34,6 +38,7 @@ class MicrophoneStream:
             rate=self._rate,
             input=True,
             frames_per_buffer=self._chunk,
+            #input_device_index=self._audio_interface.get_default_input_device_info()['index'],
             input_device_index=3,
             # Run the audio stream asynchronously to fill the buffer object.
             # This is necessary so that the input device's buffer doesn't
@@ -217,3 +222,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+print("Done...")

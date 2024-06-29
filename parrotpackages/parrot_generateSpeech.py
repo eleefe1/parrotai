@@ -4,6 +4,8 @@ import inflect
 
 DEFAULT_CHARACTER = 'scientist'
 
+print("Importing Eleven Labs...")
+
 class ElevenLabsStream:
     #creates a class for streaming and playing Eleven Labs speech using ffmpeg
     
@@ -98,3 +100,5 @@ class ElevenLabsStream:
         self.generateSpeech(text=data['first_name']+', of your ' + p.number_to_words(data['subscription']['character_limit']) + 'limit, -- ' + p.number_to_words(remaining) + ' remain.', voiceID='kARntxLbX0EUozjrxp0G')
 
         return
+
+print("Done...")
