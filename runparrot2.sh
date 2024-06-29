@@ -9,8 +9,8 @@ pulseaudio -D
 echo user: $USER
 
 #/home/pi/parrotai/parrotMain.py
-/home/pi/parrotai/parrotMain.py; exec bash;
-#xterm -hold -e /home/pi/parrotai/parrotMain.py
+#/home/pi/parrotai/parrotMain.py; exec bash;
+xterm -hold -e /home/pi/parrotai/parrotMain.py
 #sudo DISPLAY=:0 xterm -hold -e /home/pi/parrotai/parrotMain.py
 
 
