@@ -33,4 +33,4 @@ For a new machine:
 8. Raspberry Pi Connect setup
 9. add root to pulse audio group via "sudo adduser root pulse-access"
 10. copy parrotstartup_user.service unit file to /etc/systemd/user/parrotstartup_user.service
-11. enable systemd service -> systemctl --user daemon-reload; systemctl --user enable parrotstartup.service
+11. enable systemd service -> systemctl --user daemon-reload; systemctl --user enable parrotstartup.service  -  see https://stackoverflow.com/questions/42458387/how-to-use-the-pulseaudio-api-as-root
