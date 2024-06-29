@@ -1,0 +1,17 @@
+[Unit]
+Description=Parrot AI Startup Script
+After=default.target
+
+[Service]
+Environment=XAUTHORITY=/home/pi/.Xauthority
+DISPLAY=:0
+#User=pi
+Type=idle
+ExecStart=/home/pi/parrotai/runparrot2.sh
+Restart=on-failure
+#StandardOutput=journal+console
+#User=pi
+#Environment=XAUTHORITY=/home/pi/.Xauthority
+
+[Install]
+WantedBy=default.target 
