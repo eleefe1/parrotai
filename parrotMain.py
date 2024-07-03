@@ -1,6 +1,10 @@
 #!/home/pi/parrotenv/bin/python
 
+#enable this bypass for development ONLY
+switchBypass = True
 
+if switchBypass:
+    print("WARNING: Switch is bypassed")
 
 import queue
 import re
@@ -122,7 +126,7 @@ def listen_print_loop(responses: object,stream, parrot) -> str:
         overwrite_chars = " " * (num_chars_printed - len(transcript))
         
         #this if breaks the loop if the switch is turned off
-        if not GPIO.input(17):
+        if not GPIO.input(17) and not switchBypass:
             print ("Switch OFF - breaking the loop")
             break
         
@@ -301,7 +305,7 @@ def main() -> None:
     playaudio('ready')
         
     while True:
-        if GPIO.input(17):
+        if GPIO.input(17) or switchBypass:
             switchOff_ONS = False
             
             
