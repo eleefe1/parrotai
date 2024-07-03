@@ -28,12 +28,13 @@ For a new machine:
 3. authenticate Google Speech per Google instructions
 4. install packages per requirements.txt - use "sudo apt-get install portaudio19-dev" prior to requirements.txt
 5. clone git repo
-6. create API keys fils as above
+	- ensure switchBypass is set to False
+6. create API keys file as above
 7. set host name
 8. set up bluetooth according to step 4 at https://forums.raspberrypi.com/viewtopic.php?t=235519 and https://medium.com/cemac/keep-bluetooth-discoverable-rpi-unix-bbe1c9ecbdb6
 9. Raspberry Pi Connect setup
 10. Install xterm - "sudo apt install xterm"
-10. Enable startup service
+11. Enable startup service
 	- possibly raspi-cponfig to switch to Pulse Audio from Pipewire
 	- add root to pulse audio group via "sudo adduser root pulse-access"
 	- copy parrotstartup_user.service unit file to /etc/systemd/user/parrotstartup_user.service
