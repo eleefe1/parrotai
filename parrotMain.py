@@ -1,7 +1,7 @@
 #!/home/pi/parrotenv/bin/python
 
 #enable this bypass for development ONLY
-switchBypass = True
+switchBypass = False
 
 if switchBypass:
     print("WARNING: Switch is bypassed")
