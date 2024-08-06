@@ -1,7 +1,7 @@
 #!/home/pi/parrotenv/bin/python
 
 #enable this bypass for development ONLY
-switchBypass = False
+switchBypass = True
 
 if switchBypass:
     print("WARNING: Switch is bypassed")
@@ -201,8 +201,17 @@ def listen_print_loop(responses: object,stream, parrot) -> str:
                 stream._listening = True
              
             if stream._diagnostics == True:
-                print ("In diagnostics mode. Say 'pirate' 'sugar' 'cowboy' 'scientist' 'character limit' 'leave diagnostics'.")
+                #print ("In diagnostics mode. Say 'pirate' 'sugar' 'cowboy' 'scientist' 'character limit' 'leave diagnostics'.")
+                characterList = {}
+                with open("/home/pi/parrotai/characters.txt") as f:
+                    for line in f:
+                       (name, voiceID, desc) = line.split("	")
+                       characterList[name] = {'name': name, 'voiceID': voiceID, 'desc':desc}
                 
+                print('------Chracter List-------')	   
+                for key in characterList:
+                    print (characterList[key]['name'], end=" ")
+                print("\n")
                 #if 
                 '''
                 if re.search(r"\b(pirate)\b", transcript, re.I):
