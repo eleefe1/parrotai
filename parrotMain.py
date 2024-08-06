@@ -1,7 +1,7 @@
 #!/home/pi/parrotenv/bin/python
 
 #enable this bypass for development ONLY
-switchBypass = True
+switchBypass = False
 
 if switchBypass:
     print("WARNING: Switch is bypassed")
@@ -185,7 +185,7 @@ def listen_print_loop(responses: object,stream, parrot) -> str:
                     )
                 reply = chat.choices[0].message
                 #print(reply)    #uncomment this line to show the whole response
-                print("Assistant: ", reply.content)
+                print("Parrot: ", reply.content)
                 print("*****")
 
                 parrot.messages.append(
